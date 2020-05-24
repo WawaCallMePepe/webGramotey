@@ -129,29 +129,10 @@ class Web(object):
 
 
 if __name__ == '__main__':
-
-    ''' Версия для python компилятора 
     
     Web(login=LOGIN,        # Твой логин 
         password=PASSWORD,  # Твой пароль 
         exerciseNumber=0,   # Номер упражнения 
         continueWork=False  # Продолжать делать после 100/1оо слов? да(True)/нет(False)
         ).do_work()
-        
-    Версия для .ехе '''
-    try:
-        LOGIN = input('LOGIN: ')
-        PASSWORD = int(input('PASSWORD: '))
-        exerciseNumber = int(input('Номер упражнения(0-30): '))
-        continueWork = bool(int(input('Продолжать делать после 100/1оо слов? да(1)/нет(0): ')))
-        print('')
-
-        Web(login=LOGIN,
-            password=PASSWORD,
-            exerciseNumber=exerciseNumber,
-            continueWork=continueWork
-            ).do_work()
-
-    except:
-        print("Что то пошло не так. Возможно пароль/логин неверен. Советую поглядеть в код и разобраться")
-
+ 
