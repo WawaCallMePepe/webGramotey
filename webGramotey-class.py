@@ -8,7 +8,7 @@ import time
 # Все инструкции внизу
 
 
-LOGIN, PASSWORD = ('y864280', '4704')
+LOGIN, PASSWORD = ('y000000', '0000')
 driver = Chrome()
 
 
