@@ -8,6 +8,11 @@ LOGIN, PASSWORD = ('y000000', '0000')
 driver = Chrome()
 
 
+class MyError(Exception):
+    def __init__(self, text):
+        self.text = text
+
+
 class Web(object):
     """ Description """
 
@@ -78,14 +83,14 @@ class Web(object):
             pass
         question = str(self._soup.find('div', {'id': 'trainer_question'}))
         question = question.replace('<div id="trainer_question">', ''). \
-                            replace('<span class="word_hole"></span>', '^'). \
-                            replace('</div>', ''). \
-                            replace('<span>́</span>', '')
+            replace('<span class="word_hole"></span>', '^'). \
+            replace('</div>', ''). \
+            replace('<span>́</span>', '')
 
         variants = str(self._soup.find('div', {'id': 'trainer_variants'}))
         variants = variants.replace('<div id="trainer_variants"><a class="trainer_variant">', ''). \
-                            replace('</a><span class="trainer_separator"></span><a class="trainer_variant">', ' '). \
-                            replace('</a></div>', '').split(' ')
+            replace('</a><span class="trainer_separator"></span><a class="trainer_variant">', ' '). \
+            replace('</a></div>', '').split(' ')
 
         for i in variants:
             if i == '(раздельно)' or i == '(пробел)':
@@ -125,10 +130,8 @@ class Web(object):
 
 
 if __name__ == '__main__':
-    
-    Web(login=LOGIN,        # Твой логин 
+    Web(login=LOGIN,  # Твой логин
         password=PASSWORD,  # Твой пароль 
-        exerciseNumber=0,   # Номер упражнения 
+        exerciseNumber=0,  # Номер упражнения
         continueWork=False  # Продолжать делать после 100/1оо слов? да(True)/нет(False)
         ).do_work()
- 
