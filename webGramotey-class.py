@@ -49,10 +49,14 @@ class Web(object):
         elementLogin = driver.find_element_by_name('simora_pass')
         elementLogin.send_keys(self._password)
         elementLogin.send_keys(Keys.ENTER)
-        driver.get('https://login.cerm.ru/_user/user_app.php?mod=pwg')
-        self._yourName = driver.find_element_by_class_name('content_label').text[20:]
+        if self._get_soup().find('div', {'id': 'error'}):
+            raise MyError('Логин или пароль указаны неверно')
 
     def _select_exercise(self):
+        driver.get('https://login.cerm.ru/_user/user_app.php?mod=pwg')
+        if self._get_soup().find('div', {'class': 'shadow_for_box red_signal'}):
+            raise MyError('Аккаунт заблокирован')
+        self._yourName = driver.find_element_by_class_name('content_label').text[20:]
         driver.find_element_by_class_name('inactiveToggle').click()
         exerciseClosed = driver.find_elements_by_class_name('exerciseClosed')
         self._exerciseInfo = []
@@ -63,6 +67,9 @@ class Web(object):
             exerciseProgress = [int(i) for i in exerciseProgress]
 
             self._exerciseInfo.append([exerciseName, exerciseLink, exerciseProgress])
+
+        if not self._get_soup().find('div', {'class': 'exerciseClosed'}):
+            raise MyError('Нет такого упражнения (list index out of range)')
         self._exerciseInfo[self._exerciseNumber][1].click()
 
     def _correct_mistake(self):
@@ -112,26 +119,32 @@ class Web(object):
                 break
 
     def do_work(self):
-        self._sign_up()
-        self._select_exercise()
-        self._get_statistics()
-        time.sleep(2)
-        while self._continueWork or self._wordsDone < self._wordsLeft:
+        try:
+            self._sign_up()
+            self._select_exercise()
+            self._get_statistics()
+            time.sleep(2)
+            while self._continueWork or self._wordsDone < self._wordsLeft:
 
-            if self._get_soup().find('div', {'id': 'trainer_rno_right'}):
-                self._correct_mistake()
-                self._mistakeExist = True
-            elif self._get_soup().find('div', {'id': 'trainer_variants'}):
-                self._do_exercise()
-                self._get_word_info()
-                self._wordsDone += 1
+                if self._get_soup().find('div', {'id': 'trainer_rno_right'}):
+                    self._correct_mistake()
+                    self._mistakeExist = True
+                elif self._get_soup().find('div', {'id': 'trainer_variants'}):
+                    self._do_exercise()
+                    self._get_word_info()
+                    self._wordsDone += 1
+
+        except Exception as e:
+            print(f'Возникла ошибка: {e}')
 
         driver.quit()
 
 
 if __name__ == '__main__':
-    Web(login=LOGIN,  # Твой логин
-        password=PASSWORD,  # Твой пароль 
-        exerciseNumber=0,  # Номер упражнения
-        continueWork=False  # Продолжать делать после 100/1оо слов? да(True)/нет(False)
+    Web(login=LOGIN,
+        password=PASSWORD,
+        exerciseNumber=1231,
+        continueWork=False
         ).do_work()
+
+    input('\nНажмите Enter для выхода...')
