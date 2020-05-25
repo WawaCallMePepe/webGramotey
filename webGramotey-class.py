@@ -4,10 +4,6 @@ from selenium.webdriver.common.keys import Keys
 import requests
 import time
 
-
-# Все инструкции внизу
-
-
 LOGIN, PASSWORD = ('y000000', '0000')
 driver = Chrome()
 
